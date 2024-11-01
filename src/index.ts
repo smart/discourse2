@@ -223,13 +223,15 @@ export default class DiscourseAPI extends DiscourseAPIGenerated {
   private url: string;
   private "Api-Key"?: string;
   private "Api-Username"?: string;
+  private fetch: Function;
 
   constructor(
     url: string,
-    opts: { "Api-Key"?: string; "Api-Username"?: string } = {},
+    opts: { "Api-Key"?: string; "Api-Username"?: string, fetch?: Function } = {},
   ) {
     super();
     this.url = url;
+    this.fetch = opts.fetch || fetch;
     if (opts["Api-Key"]) this["Api-Key"] = opts["Api-Key"];
     if (opts["Api-Username"]) this["Api-Username"] = opts["Api-Username"];
   }
@@ -275,17 +277,17 @@ export default class DiscourseAPI extends DiscourseAPIGenerated {
         } else {
           throw new Error(
             'Unexpected parameter type in "' +
-              operationName +
-              '": ' +
-              JSON.stringify(param),
+            operationName +
+            '": ' +
+            JSON.stringify(param),
           );
         }
       }
     } else if (Object.keys(params).length) {
       throw new Error(
         operationName +
-          " accepts no parameters, but given: " +
-          JSON.stringify(params),
+        " accepts no parameters, but given: " +
+        JSON.stringify(params),
       );
     }
 
@@ -340,9 +342,9 @@ export default class DiscourseAPI extends DiscourseAPIGenerated {
     if (additionalProperties.length) {
       throw new Error(
         "Unknown parameter(s) for " +
-          operationName +
-          ": " +
-          additionalProperties.join(", "),
+        operationName +
+        ": " +
+        additionalProperties.join(", "),
       );
     }
 
@@ -400,7 +402,7 @@ export default class DiscourseAPI extends DiscourseAPIGenerated {
       throw new Error("No expected responses for " + operationName);
     }
 
-    const response = await fetch(url, requestInit);
+    const response = await this.fetch(url, requestInit);
 
     const text = await response.text();
     if (response.status !== 200) {
